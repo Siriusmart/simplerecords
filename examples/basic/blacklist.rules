@@ -1,0 +1,4 @@
+#               IP
+blacklist:      istr
+blacklist       123.456.789
+blacklist       234.456.789

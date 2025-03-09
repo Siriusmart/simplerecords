@@ -1,0 +1,5 @@
+#               username    IP          expiry
+whitelist:      ustr        istr        u64
+whitelist       joe         127.0.0.1   123456
+whitelist       bob         127.0.0.1   123457
+whitelist       alice       127.0.0.3   123459
