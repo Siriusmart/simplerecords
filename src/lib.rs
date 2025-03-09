@@ -97,6 +97,10 @@
 //! New features will be added until this becomes a text-based database. Including
 //! - Insert/delete/amending records.
 //! - Value constraints
+//! - Filter macro for more concise syntax.
+//! ```
+//! doc.filter(filter![*, "127.0.0.1", *])
+//! ```
 
 mod document;
 mod error;
