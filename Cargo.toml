@@ -1,6 +1,12 @@
 [package]
 name = "simplerecords"
 version = "0.1.0"
+authors = [ "Siriusmart" ]
+description = "Strongly typed text-based format for declarative configuration with zero dependencies."
+repository = "https://github.com/siriusmart/simplerecords"
+license = "AGPL-3.0-or-later"
+keywords = [ "parser", "database", "storage", "text", "config" ]
+categories = [ "config", "database", "parsing", "text-processing", "value-formatting" ]
 edition = "2021"
 
 [dependencies]
