@@ -6,13 +6,9 @@ use crate::{Filter, SchemaOne, Signature};
 /// Represents all possible errors that can occur.
 pub enum Error {
     /// There is no file at file path.
-    FileNotFound {
-        path: String,
-    },
+    FileNotFound { path: String },
     /// Error when reading/writing file.
-    IoError {
-        reason: String,
-    },
+    IoError { reason: String },
     /// Error when parsing input.
     ParseError {
         location: String,
@@ -25,20 +21,16 @@ pub enum Error {
         got: Filter,
     },
     /// No definition for specified record type.
-    NoDefinition {
-        label: String,
-    },
+    NoDefinition { label: String },
 }
 
 #[derive(Debug, PartialEq, Eq)]
 /// Represents all possible errors that can occur while parsing from file.
 pub enum ParseError {
-    /// Too few arguments for `include`
+    /// Too few arguments for commands
     MissingArguments,
     /// Illegal record type name (cannot be `include`)
-    IllegalName {
-        label: String,
-    },
+    IllegalName { label: String },
     /// Two entries with exactly the same values is not allowed
     DuplicatedEntry {
         first_appear: String,
@@ -52,16 +44,14 @@ pub enum ParseError {
         label: String,
     },
     /// Unrecognised data type in type definition
-    UnrecognisedType {
-        got: String,
-    },
+    UnrecognisedType { got: String },
     /// String is not closed at EOL
     UnclosedString,
     /// Multi-line comment is not closed at EOF
     UnclosedMultiLineComment,
     /// Argument cannot be parsed for reason
     IllegalArgument,
-    /// Too many arguments for `include`
+    /// Too many arguments for commands
     TooManyArguments,
     /// Cannot convert record field data to correct type
     TypeError {
@@ -70,30 +60,19 @@ pub enum ParseError {
         reason: String,
     },
     /// Record has incorrect number of fields
-    ArgumentLengthMismatch {
-        expected: usize,
-        got: usize,
-    },
+    ArgumentLengthMismatch { expected: usize, got: usize },
     /// File specified in `include` not found
-    FileNotFound {
-        path: String,
-    },
+    FileNotFound { path: String },
     /// No definition for specified record type.
-    NoDefinition {
-        label: String,
-    },
+    NoDefinition { label: String },
     /// Error when reading/writing file as specified by `input`
-    IoError {
-        reason: String,
-    },
+    IoError { reason: String },
 }
 
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::FileNotFound { path } => f.write_fmt(format_args!(
-                "file not found at `{path}`"
-            )),
+            Self::FileNotFound { path } => f.write_fmt(format_args!("file not found at `{path}`")),
             Self::IoError { reason } => f.write_fmt(format_args!("io error: {reason}")),
             Self::ParseError {
                 location,
@@ -146,9 +125,7 @@ impl Display for ParseError {
             Self::ArgumentLengthMismatch { expected, got } => f.write_fmt(format_args!(
                 "argument length mismatch (expected {expected}, got {got})"
             )),
-            Self::FileNotFound { path } => f.write_fmt(format_args!(
-                "file not found at `{path}`"
-            )),
+            Self::FileNotFound { path } => f.write_fmt(format_args!("file not found at `{path}`")),
             Self::NoDefinition { label } => {
                 f.write_fmt(format_args!("definition not found for `{label}`"))
             }

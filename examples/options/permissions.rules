@@ -1,0 +1,7 @@
+#       Name      Category  Enabled
+perm    Bob       beta      true
+perm    Bob       voice     true
+perm    John      voice     false
+perm    John      files     true
+perm    Alice     files     true
+perm    Sirius    admin     true

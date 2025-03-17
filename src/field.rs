@@ -39,6 +39,8 @@ pub enum Field {
     U32(u32),
     /// 64 bit unsigned integer
     U64(u64),
+    /// Boolean value
+    Bool(bool),
 }
 
 impl Field {
@@ -76,6 +78,7 @@ impl Display for Field {
             Self::U16(u) => f.write_fmt(format_args!("{u}")),
             Self::U32(u) => f.write_fmt(format_args!("{u}")),
             Self::U64(u) => f.write_fmt(format_args!("{u}")),
+            Self::Bool(b) => f.write_fmt(format_args!("{b}")),
         }
     }
 }
@@ -189,6 +192,14 @@ impl Field {
             _ => None,
         }
     }
+
+    /// Converts bool to bool
+    pub fn as_bool(&self) -> Option<bool> {
+        match self {
+            Self::Bool(b) => Some(*b),
+            _ => None,
+        }
+    }
 }
 
 impl Field {
@@ -211,6 +222,7 @@ impl Field {
             Self::U16(u) => Self::U64(*u as u64),
             Self::U32(u) => Self::U64(*u as u64),
             Self::U64(u) => Self::U64(*u),
+            Self::Bool(b) => Self::Bool(*b),
         }
     }
 
@@ -230,6 +242,7 @@ impl Field {
             Self::U16(_) => Signature::U64,
             Self::U32(_) => Signature::U64,
             Self::U64(_) => Signature::U64,
+            Self::Bool(_) => Signature::Bool,
         }
     }
 }
@@ -289,6 +302,10 @@ impl PartialEq for Field {
                 Self::U64(b) => a == b,
                 _ => false,
             },
+            Self::Bool(a) => match other {
+                Self::Bool(b) => a == b,
+                _ => false,
+            },
         }
     }
 }
@@ -309,6 +326,7 @@ impl Hash for Field {
             Self::U16(u) => u.hash(state),
             Self::U32(u) => u.hash(state),
             Self::U64(u) => u.hash(state),
+            Self::Bool(b) => b.hash(state),
         }
     }
 }

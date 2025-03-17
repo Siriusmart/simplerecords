@@ -1,32 +1,32 @@
 //! # Simple Records &emsp; [![Latest Version]][crates.io] [![Downloads]][crates.io] [![Stars]][github.com]
-//! 
+//!
 //! [Stars]: https://shields.io/github/stars/siriusmart/simplerecords?style=social
 //! [Downloads]: https://img.shields.io/crates/d/simplerecords?label=crates.io%20downloads
 //! [Latest Version]: https://img.shields.io/crates/v/simplerecords
 //! [crates.io]: https://crates.io/crates/simplerecords
 //! [github.com]: https://github.com/siriusmart/simplerecords
-//! 
+//!
 //! **Strongly typed text-based format for declarative configuration.**
-//! 
+//!
 //! ```
 //! [dependencies]
 //! simplerecords = "0.1"
 //! ```
-//! 
+//!
 //! Here are some reasons to use *Simple Records*.
 //! - **Human readable.** For large number of rules, records can be written in a table-like format.
 //! - **Performant searching.** All records are indexed to be ready for search.
 //! - **Multi-file support.** Records and definitions can be imported from any file for maximum flexibility.
-//! 
+//!
 //! ## Format specification
-//! 
+//!
 //! **Comments** are ignored.
 //! - Single line: `#`
 //! - Multi-line: `/* */`
 //! ```text
 //! #               username    IP          expiry
 //! ```
-//! 
+//!
 //! **Definition** define the record *type*.
 //! ```text
 //! #               v--- unsigned string    v--- 64 bit unsigned integer
@@ -43,11 +43,11 @@
 //! ```
 //! include filename
 //! ```
-//! 
+//!
 //! > The **default file extension** if none specified, is `*.rules`.
-//! 
+//!
 //! Definition and rules can be in **any file** and in **any order**, as long as it exists.
-//! 
+//!
 //! ## Usage
 //! ```
 //! use simplerecords::*;
@@ -66,14 +66,42 @@
 //! ```
 //! 4. Output the results.
 //! ```
-//! (whitelist.rules@3) whitelist "joe" "127.0.0.1" 123456
-//! (whitelist.rules@4) whitelist "bob" "127.0.0.1" 123457
+//! (whitelist@3) whitelist "joe" "127.0.0.1" 123456
+//! (whitelist@4) whitelist "bob" "127.0.0.1" 123457
 //! ```
-//! 
-//! The example above can be found in [`src/examples`](https://github.com/Siriusmart/simplerecords/blob/master/examples/basic/src/main.rs).
-//! 
+//!
+//! ### Multiple imports
+//!
+//! You can read a single document from multiple files.
+//!
+//! ```
+//! let doc = Options::default()
+//!     // specify files to load from
+//!     .with("include users")
+//!     .with("include permissions")
+//!     .open();
+//! ```
+//!
+//! ### Scoping
+//!
+//! Sections of the file can be labelled for organisation.
+//!
+//! ```text
+//! scope friends   # joe and bob are in the 'friends' scope
+//! whitelist       joe         127.0.0.1   123456
+//! whitelist       bob         127.0.0.1   123457
+//!
+//! scope members   # alice is in the 'members' scope
+//! whitelist       alice       127.0.0.3   123459
+//!
+//! scope           # reset scopes
+//! whitelist       sirius      127.0.0.5   123451
+//! ```
+//!
+//! The examples above can be found in [`src/examples`](https://github.com/Siriusmart/simplerecords/blob/master/examples).
+//!
 //! ### Types
-//! 
+//!
 //! |Type|Description|
 //! |---|---|
 //! |char|A single character|
@@ -89,11 +117,12 @@
 //! |f64|64 bit floating number.|
 //! |istr|Case sensitive string.|
 //! |ustr|Case insensitive string.|
-//! 
+//! |bool|Boolean value.|
+//!
 //! ## Todo
-//! 
+//!
 //! All current features are **stable** and there will be no breaking changes.
-//! 
+//!
 //! New features will be added until this becomes a text-based database. Including
 //! - Insert/delete/amending records.
 //! - Value constraints
@@ -106,6 +135,7 @@ mod document;
 mod error;
 mod field;
 mod filter;
+mod options;
 mod pass;
 mod record;
 mod recordset;
@@ -116,6 +146,7 @@ pub use document::*;
 pub use error::*;
 pub use field::*;
 pub use filter::*;
+pub use options::*;
 pub use pass::*;
 pub use record::*;
 pub use recordset::*;

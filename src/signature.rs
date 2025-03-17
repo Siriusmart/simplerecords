@@ -18,6 +18,7 @@ pub enum Signature {
     U16,
     U32,
     U64,
+    Bool,
 }
 
 impl FromStr for Signature {
@@ -38,6 +39,7 @@ impl FromStr for Signature {
             "u16" => Self::U16,
             "u32" => Self::U32,
             "u64" => Self::U64,
+            "bool" => Self::Bool,
             _ => return Err(Self::Err::UnrecognisedType { got: s.to_string() }),
         })
     }
@@ -59,6 +61,7 @@ impl Display for Signature {
             Self::U16 => "u16",
             Self::U32 => "u32",
             Self::U64 => "u64",
+            Self::Bool => "bool",
         })
     }
 }
@@ -212,6 +215,20 @@ impl Signature {
             },
             Self::U64 => match s.parse() {
                 Ok(n) => Field::U64(n),
+                Err(e) => {
+                    return Err(Error::ParseError {
+                        location: location.to_string(),
+                        line,
+                        reason: ParseError::TypeError {
+                            target: *self,
+                            value: s.to_string(),
+                            reason: e.to_string(),
+                        },
+                    })
+                }
+            },
+            Self::Bool => match s.parse() {
+                Ok(b) => Field::Bool(b),
                 Err(e) => {
                     return Err(Error::ParseError {
                         location: location.to_string(),

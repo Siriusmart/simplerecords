@@ -1,4 +1,7 @@
-use std::{collections::HashMap, path::PathBuf};
+use std::{
+    collections::HashMap,
+    path::{Path, PathBuf},
+};
 
 use crate::{Error, Filter, Pass, Record, RecordSet, Schema};
 
@@ -59,5 +62,15 @@ impl Document {
                 label: filter.record().to_string(),
             }),
         }
+    }
+}
+
+impl Document {
+    /// Create a document by providing a string, and parse it as if it were from the specified path.
+    pub fn load_as(content: &str, path: &Path) -> Result<Self, Error> {
+        let pass = Pass::parse(path, content)?;
+        let (schema, records) = pass.destruct();
+
+        Ok(Self(RecordSet::parse(Schema::parse(schema)?, records)?))
     }
 }

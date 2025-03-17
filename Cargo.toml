@@ -1,6 +1,6 @@
 [package]
 name = "simplerecords"
-version = "0.1.0"
+version = "0.1.1"
 authors = [ "Siriusmart" ]
 description = "Strongly typed text-based format for declarative configuration with zero dependencies."
 repository = "https://github.com/siriusmart/simplerecords"

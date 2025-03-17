@@ -1,4 +1,4 @@
-use std::{fs, path::Path};
+use std::{ffi::OsStr, fs, path::Path};
 
 use crate::{Error, ParseError};
 
@@ -213,7 +213,14 @@ impl Pass {
 
     /// Split file content into two streams.
     pub fn parse(file: &Path, s: &str) -> Result<Self, Error> {
-        let filename = file.to_string_lossy().to_string();
+        let filename = if file.extension() == Some(OsStr::new("rules")) {
+            file.file_stem()
+                .unwrap_or(OsStr::new("unnamed"))
+                .to_string_lossy()
+                .to_string()
+        } else {
+            file.to_string_lossy().to_string()
+        };
         let s = match Self::clear_comment(s) {
             Ok(s) => s,
             Err((line, reason)) => {
@@ -225,6 +232,7 @@ impl Pass {
             }
         };
 
+        let mut scope = None;
         let mut schema = Vec::new();
         let mut records = Vec::new();
 
@@ -247,7 +255,16 @@ impl Pass {
                     }
                 };
 
-                schema.push((filename.clone(), no, label.trim().to_string(), args));
+                schema.push((
+                    if let Some(scope) = &scope {
+                        format!("{filename}<{scope}>")
+                    } else {
+                        filename.clone()
+                    },
+                    no,
+                    label.trim().to_string(),
+                    args,
+                ));
                 continue;
             }
 
@@ -286,9 +303,25 @@ impl Pass {
                     schema.append(&mut loaded.schema);
                     records.append(&mut loaded.records);
                 }
-                label => {
-                    records.push((filename.clone(), no, label.to_string(), words[1..].to_vec()))
+                "scope" if words.len() == 1 => scope = None,
+                "scope" if words.len() == 2 => scope = Some(words[1].clone()),
+                "scope" => {
+                    return Err(Error::ParseError {
+                        location: filename,
+                        line: no,
+                        reason: ParseError::TooManyArguments,
+                    })
                 }
+                label => records.push((
+                    if let Some(scope) = &scope {
+                        format!("{filename}<{scope}>")
+                    } else {
+                        filename.clone()
+                    },
+                    no,
+                    label.to_string(),
+                    words[1..].to_vec(),
+                )),
             }
         }
 

@@ -66,11 +66,39 @@ let found = doc.find(filter);
 ```
 4. Output the results.
 ```yml
-(whitelist.rules@3) whitelist "joe" "127.0.0.1" 123456
-(whitelist.rules@4) whitelist "bob" "127.0.0.1" 123457
+(whitelist@3) whitelist "joe" "127.0.0.1" 123456
+(whitelist@4) whitelist "bob" "127.0.0.1" 123457
 ```
 
-The example above can be found in [`src/examples`](https://github.com/Siriusmart/simplerecords/blob/master/examples/basic/src/main.rs).
+### Multiple imports
+
+You can read a single document from multiple files.
+
+```rs
+let doc = Options::default()
+    // specify files to load from
+    .with("include users")
+    .with("include permissions")
+    .open();
+```
+
+### Scoping
+
+Sections of the file can be labelled for organisation.
+
+```yml
+scope friends   # joe and bob are in the 'friends' scope
+whitelist       joe         127.0.0.1   123456
+whitelist       bob         127.0.0.1   123457
+
+scope members   # alice is in the 'members' scope
+whitelist       alice       127.0.0.3   123459
+
+scope           # reset scopes
+whitelist       sirius      127.0.0.5   123451
+```
+
+The examples above can be found in [`src/examples`](https://github.com/Siriusmart/simplerecords/blob/master/examples).
 
 ### Types
 
@@ -89,6 +117,7 @@ The example above can be found in [`src/examples`](https://github.com/Siriusmart
 |f64|64 bit floating number.|
 |istr|Case sensitive string.|
 |ustr|Case insensitive string.|
+|bool|Boolean value.|
 
 ## Todo
 
